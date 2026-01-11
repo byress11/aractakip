@@ -1,0 +1,2348 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Şarj Takip - Elektrikli Araç Şarj Yönetimi</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png"
+        href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAOWSURBVHgBzVdLaBNBGP5nN5vNJpvEPDS1VkVFUMGDFy8ePHjw4sFTD4IgHsSDCIIgKB68eBAUQfDgQVDwIAqCB0EQBA+CIIKgIlhbbZP0kTTZTXaz2Z2d8c9uNk2a3SSt9IfwZ3Zm5vs/5v/mHyIwAAzDYBiGQdd1VKtVNJtNtFotWJYFy7LQ6XTQarVgmibq9TpqtRqqVRWqqkLTdNTrKmpqFdVqFYqioFwuo1QqoVQqolQqoVgsolgsQlEKKBQKyOfzyOfzyOdzUJQ8crkcctkslEwWSiaDdCaDdDqNVCoFJZmEkkwiGQshlUwiHo8jFoshnoshGo0iEolARhQRiQQiEQmRiIRwOIxwWIIkSQiHwwiHJQRDQQSDQQQDQQSDQfi8XgS8XgQCAQS8HgT8fgR8fgR8Pvg9Hrhdbrg8brjdbrjcLrhcLjidTjicDtjtdlgsFlgsFphMJpjMZhhNJhhNJhhNRhgNBhj0Buj1euj1OujWrdOi02qhWbsW67ZuxZo1a7B69WqsWrkSy5cvx7Jly7Bk6VIsWbIYixcvxqJFi7BoUQKLFi3EwoWLsWBhAgsWxLFgQRzz58cQi8WwYEEcMo4i1t8Pvx/+gB8+nx8+rw8+nw8+rw8ejwdutxsulwtOpxMOhwN2ux02mw02mw1WqxVWqxUWiwVmsxlmsxkmkwlGoxFGoxEGgwEGgwF6vR56vR46nQ46nQ5arRZr167F6tWrsXLlSqxYsQLLly/HsmXLsHTpUixZsgSLFy/GwoULkUgksGBBHPPnxxGLxRCLxTB/fhyRSAThcBiBQAA+nw9+vx9erxdutxtutxtOpxN2ux12ux0OhwMOhwNWqxVWqxUWiwVmsxlmsxkmkwlGoxFGoxEGgwF6vR56vR46nQ5arRZarRZr1qzBqlWrsGLFCixbtgxLlizB4sWLsWjRIiQSCSxYsADz5s1DLBZDNBpFJBJBOBxGKBRCIBCA3++Hz+eDz+eDx+OBy+WC0+mE0+mEw+GA3W6HzWaDzWaD1WqFxWKBxWKB2WyG2WyGyWSC0WiEwWCA0WiEXq+HXq+HTqeDTqeD VqvF2rVrsWrVKixfvhxLly7FokWLsGDBAsyfPx/z5s1DLBZDNBpFJBJBKBRCMBhEIBCAz+eD1+uF2+2Gy+WC0+mEw+GA3W6HzWaDzWaD1WqFxWKBxWKB2WyG2WyGyWSC0WiEwWCAwWCAXq+HXq+H TqeDVqvF2rVrsWrVKixfvhxLly7FokWLsGDBAsybNw+xWAzRaBSRSAShUAihUAiBQAB+vx8+nw9erxdutxtOpxMOhwN2ux02mw1WqxUWiwVmsxkmkwlGoxEGgwF6vR46nQ5arRZr167FqlWrsHz5cixduhSLFi3CggULMG/ePMRiMUSjUUQiEYRCIQSDQQQCAQQCAfh8Pni9Xrhc Lrhc LjgcDtjtdthsNlgsFlgsFpjNZpjNZhiNRhiNRuj1euh0OqxduxarVq3C8uXLsXTpUixatAgLFixAPB5HNBpFJBJBKBRCMBhEIBCAz+eD1+uFy+WC0+mEw+GA3W6HzWaD1WqFxWKB2WyGyWSC0WiEwWCAXq+HTqfD2rVrsWrVKixfvhxLly7FokWLsGDBAsyfPx+xWAzRaBSRSAShUAjBYBCBQAA+nw9erxdutxtOpxMOhwN2ux1WqxUWiwVmsxkmkwlGoxEGgwF6vR46nQ5r167FypUrsXz5cixduhSLFi3CggULEI/HEY1GEYlEEAqFEAwGEQgE4PP54PV64XK54HQ64XA4YLfbYbVaYbFYYDabYTKZYDQaodfrodPpsHbtWqxcuRLLly/H0qVLsWjRIixYsADxeBzRaBSRSAShUAjBYBCBQAA+nw9erxculwtOpxMOhwN2ux1WqxUWiwVmsxkmkwlGoxF6vR46nQ5r167FypUrsXz5cixduhSLFi3CggULEI/HEY1GEYlEEAqFEAwGEQgE4PP54PV64XK54HQ64XA4YLfbYbVaYbFYYDabYTKZYDQaodfrodPpsHbtWqxcuRLLly/H0qVLsWjRIixYsADxeBzRaBSRSAShUAjBYBABQAA+nw9erxculwtOpxMOhwN2ux1WqxUWiwVmsxkmkwlGoxF6vR46nQ5r167FypUrsXz5cixduhSLFi3CggULEI/HEY1GEYlEEAqFEAwGEQgE4PP54PV64XK54HQ64XA4YLfbYbVaYbFYYDabYTKZYDQaodfrodPpsHbtWqxcuRLLly/H0qVLsWjRIixYsADxeBzRaBSRSAShUAjBYBCBQAA+nw9erxculwtOpxMOhwN2ux1WqxUWiwVmsxkmkwlGoxF6vR46nQ5r167FypUrsXz5cixduhSLFi3CggULEI/HEY1GEYlEEAqFEAwGEQgE4PP54PV64XK54HQ64XA4YLfbYbVaYbFYYDabYTKZYDQaodfrodPpsHbtWqxcuRLLly/H0qVLsWjRIixYsADxeBzRaBSRSAShUAjBYBCBQAA+nw9erxculwtOpxMOhwN2ux1WqxUWiwVmsxkmkwlGoxF6vR46nQ5r167FypUrsXz5cixduhSLFi3CggULEI/HEY1GEYlEEAqFEAwGqw//A0gEQHABHNBQAAAAElFTkSuQmCC">
+    <link rel="apple-touch-icon"
+        href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAOWSURBVHgBzVdLaBNBGP5nN5vNJpvEPDS1VkVFUMGDFy8ePHjw4sFTD4IgHsSDCIIgKB68eBAUQfDgQVDwIAqCB0EQBA+CIIKgIlhbbZP0kTTZTXaz2Z2d8c9uNk2a3SSt9IfwZ3Zm5vs/5v/mHyIwAAzDYBiGQdd1VKtVNJtNtFotWJYFy7LQ6XTQarVgmibq9TpqtRqqVRWqqkLTdNTrKmpqFdVqFYqioFwuo1QqoVQqolQqoVgsolgsQlEKKBQKyOfzyOfzyOdzUJQ8crkslEwWSiaDdCaDdDqNVCoFJZmEkkwiGQshlUwiHo8jFoshGoshGo0iEolARhQRiQQiEQmRiIRwOIxwWIIkSQiHwwiHJQRDQQSDQfi8XgS8XgQDQQQCAQS8Hrg8brg8brjdbrjcLrhcLjicDjicDtjtdlgsFphMJpjMZhhNJhj0Buj1Ouj1OujWrdOi02qhWbsW67ZuxZo1a7B69WqsWrkSy5cvx7Jly7Bk6VIsWbIYixcvxqJFi7BoUQKLFi3EwoWLsWBhAgsWxLFgQRzz58cQi8WwYEEcMo4i1t8Pvx/+gB8+nx8+rw8+nw8+rw8ejwdutxsulwtOpxMOhwN2ux02mw02mw1WqxVWqxUWiwVmsxlmsxkmkwlGoxFGoxEGgwEGgwF6vR56vR46nQ46nQ5arRZr167F6tWrsXLlSqxYsQLLly/HsmXLsHTpUixZsgSLFy/GwoULkUgksGBBHPPnxxGLxRCLxTB/fhyRSAThcBiBQAA+nw9+vx9erxdutxtutxtOpxN2ux12ux0OhwMOhwNWqxVWqxUWiwVmsxlmsxkmkwlGoxFGoxEGgwF6vR56vR46nQ5arRZarRZr1qzBqlWrsGLFCixbtgxLlizB4sWLsWjRIiQSCSxYsADz5s1DLBZDNBpFJBJBOBxGKBRCIBCA3++Hz+eDz+eDx+OBy+WC0+mE0+mEw+GA3W6HzWaDzWaD1WqFxWKBxWKB2WyG2WyGyWSC0WiEwWCA0WiEXq+HXq+HTqeDTqeDVqvF2rVrsWrVKixfvhxLly7FokWLsGDBAsyfPx/z5s1DLBZDNBpFJBJBKBRCMBhEIBCAz+eD1+uF2+2Gy+WC0+mEw+GA3W6HzWaDzWaD1WqFxWKBxWKB2WyG2WyGyWSC0WiEwWCAwWCAXq+HXq+HTqeDVqvF2rVrsWrVKixfvhxLly7FokWLsGDBAsybNw+xWAzRaBSRSAShUAihUAiBQAB+vx8+nw9erxdutxtOpxMOhwN2ux02mw1WqxUWiwVmsxkmkwlGoxEGgwF6vR46nQ5arRZr167FqlWrsHz5cixduhSLFi3CggULMG/ePMRiMUSjUUQiEYRCIQSDQQQCAQQCAfh8Pni9Xrhc Lrhc LjgcDtjtdthsNlgsFlgsFpjNZpjNZhiNRhiNRuj1euh0OqxduxarVq3C8uXLsXTpUixatAgLFixAPB5HNBpFJBJBKBRCMBhEIBCAz+eD1+uFy+WC0+mEw+GA3W6HzWaD1WqFxWKB2WyGyWSC0WiEwWCAXq+HTqfD2rVrsWrVKixfvhxLly7FokWLsGDBAsyfPx+xWAzRaBSRSAShUAjBYBCBQAA+nw9erxdutxtOpxMOhwN2ux1WqxUWiwVmsxkmkwlGoxEGgwF6vR46nQ5r167FypUrsXz5cixduhSLFi3CggULEI/HEY1GEYlEEAqFEAwGEQgE4PP54PV64XK54HQ64XA4YLfbYbVaYbFYYDabYTKZYDQaodfrodPpsHbtWqxcuRLLly/H0qVLsWjRIixYsADxeBzRaBSRSAShUAjBYBCBQAA+nw9erxculwtOpxMOhwN2ux1WqxUWiwVmsxkmkwlGoxF6vR46nQ5r167FypUrsXz5cixduhSLFi3CggULEI/HEY1GEYlEEAqFEAwGEQgE4PP54PV64XK54HQ64XA4YLfbYbVaYbFYYDabYTKZYDQaodfrodPpsHbtWqxcuRLLly/H0qVLsWjRIixYsADxeBzRaBSRSAShUAjBYBABQAA+nw9erxculwtOpxMOhwN2ux1WqxUWiwVmsxkmkwlGoxF6vR46nQ5r167FypUrsXz5cixduhSLFi3CggULEI/HEY1GEYlEEAqFEAwGEQgE4PP54PV64XK54HQ64XA4YLfbYbVaYbFYYDabYTKZYDQaodfrodPpsHbtWqxcuRLLly/H0qVLsWjRIixYsADxeBzRaBSRSAShUAjBYBCBQAA+nw9erxculwtOpxMOhwN2ux1WqxUWiwVmsxkmkwlGoxF6vR46nQ5r167FypUrsXz5cixduhSLFi3CggULEI/HEY1GEYlEEAqFEAwGEQgE4PP54PV64XK54HQ64XA4YLfbYbVaYbFYYDabYTKZYDQaodfrodPpsHbtWqxcuRLLly/H0qVLsWjRIixYsADxeBzRaBSRSAShUAjBYBCBQAA+nw9erxculwtOpxMOhwN2ux1WqxUWiwVmsxkmkwlGoxF6vR46nQ5r167FypUrsXz5cixduhSLFi3CggULEI/HEY1GEYlEEAqFEAwGEQgEqw//A0gEQHABHNBQAAAAElFTkSuQmCC">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- jsPDF for PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        :root {
+            --bg: #ffffff;
+            --bg-secondary: #f5f5f7;
+            --card: #ffffff;
+            --card-hover: #f0f0f0;
+            --text: #1d1d1f;
+            --text-secondary: #86868b;
+            --accent: #00b894;
+            --accent-light: rgba(0, 184, 148, 0.1);
+            --border: #e5e5e5;
+            --shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+            --danger: #ff3b30;
+            --blue: #0984e3;
+            --purple: #6c5ce7;
+        }
+
+        [data-theme="dark"] {
+            --bg: #000000;
+            --bg-secondary: #1c1c1e;
+            --card: #1c1c1e;
+            --card-hover: #2c2c2e;
+            --text: #ffffff;
+            --text-secondary: #8e8e93;
+            --border: #38383a;
+            --shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-secondary);
+            color: var(--text);
+            min-height: 100vh;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            padding-bottom: 100px;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .icon-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            border: none;
+            background: var(--card);
+            color: var(--text);
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow);
+            transition: all 0.2s;
+        }
+
+        .icon-btn:hover {
+            background: var(--card-hover);
+            transform: scale(1.05);
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 18px;
+            box-shadow: var(--shadow);
+            transition: transform 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .stat-card.primary {
+            background: linear-gradient(135deg, var(--accent), #00a187);
+            color: white;
+        }
+
+        .stat-card.primary .stat-label {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .stat-icon {
+            font-size: 22px;
+            margin-bottom: 10px;
+        }
+
+        .stat-value {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .quick-btn {
+            padding: 16px 20px;
+            border-radius: 14px;
+            border: 2px dashed var(--border);
+            background: var(--card);
+            color: var(--text);
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.2s;
+        }
+
+        .quick-btn:hover {
+            border-color: var(--accent);
+            background: var(--accent-light);
+        }
+
+        /* Section */
+        .section {
+            background: var(--card);
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+
+        .section-header:hover {
+            background: var(--bg-secondary);
+        }
+
+        .section-header.clickable::after {
+            content: '→';
+            font-size: 18px;
+            color: var(--accent);
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title .icon {
+            font-size: 22px;
+        }
+
+        .badge {
+            background: var(--accent-light);
+            color: var(--accent);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+
+        /* Charts */
+        .chart-container {
+            position: relative;
+            height: 260px;
+            margin-bottom: 12px;
+        }
+
+        .chart-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+        }
+
+        .chart-tab {
+            padding: 10px 16px;
+            border-radius: 10px;
+            border: none;
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+
+        .chart-tab.active {
+            background: var(--accent);
+            color: white;
+        }
+
+        .chart-legend {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 3px;
+        }
+
+        /* List */
+        .list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .list-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 16px;
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            transition: all 0.2s;
+        }
+
+        .list-item:hover {
+            background: var(--card-hover);
+        }
+
+        .item-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .item-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .item-icon.charge {
+            background: rgba(0, 184, 148, 0.15);
+        }
+
+        .item-icon.payment {
+            background: rgba(9, 132, 227, 0.15);
+        }
+
+        .item-info h4 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .item-info p {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .item-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .item-value {
+            text-align: right;
+        }
+
+        .item-value .amount {
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .item-value .unit {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .delete-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            border: none;
+            background: rgba(255, 59, 48, 0.1);
+            color: var(--danger);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .list-item:hover .delete-btn {
+            opacity: 1;
+        }
+
+        /* Detail Page */
+        .detail-page {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--bg-secondary);
+            z-index: 100;
+            overflow-y: auto;
+        }
+
+        .detail-page.active {
+            display: block;
+        }
+
+        .detail-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 20px;
+            background: var(--card);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            box-shadow: var(--shadow);
+        }
+
+        .back-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            border: none;
+            background: var(--bg-secondary);
+            color: var(--text);
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .detail-header h2 {
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .detail-content {
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Analysis Cards */
+        .analysis-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .analysis-card {
+            background: var(--card);
+            border-radius: 14px;
+            padding: 16px;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+
+        .analysis-card .value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 4px;
+        }
+
+        .analysis-card .label {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .analysis-card.blue .value {
+            color: var(--blue);
+        }
+
+        .analysis-card.purple .value {
+            color: var(--purple);
+        }
+
+        /* Year Group */
+        .year-group {
+            margin-bottom: 20px;
+        }
+
+        .year-header {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 12px 16px;
+            background: var(--accent-light);
+            border-radius: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .year-total {
+            font-size: 14px;
+            color: var(--text);
+        }
+
+        /* Filter Tabs */
+        .filter-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+        }
+
+        .filter-tab {
+            padding: 8px 14px;
+            border-radius: 20px;
+            border: none;
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .filter-tab.active {
+            background: var(--accent);
+            color: white;
+        }
+
+        /* Monthly Table */
+        .monthly-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        .monthly-table th,
+        .monthly-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+            font-size: 14px;
+        }
+
+        .monthly-table th {
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+
+        .monthly-table td:last-child {
+            text-align: right;
+            font-weight: 600;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--card);
+            width: 100%;
+            max-width: 400px;
+            border-radius: 20px;
+            padding: 28px;
+            animation: modalIn 0.3s ease;
+        }
+
+        @keyframes modalIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 14px 16px;
+            border-radius: 12px;
+            border: 2px solid var(--border);
+            background: var(--bg-secondary);
+            color: var(--text);
+            font-size: 16px;
+            font-family: inherit;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .preview-box {
+            background: var(--accent-light);
+            border-radius: 14px;
+            padding: 18px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .preview-box .value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .preview-box .label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
+            border: none;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-secondary);
+            margin-top: 8px;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        /* Mode Toggle */
+        .mode-toggle {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 16px;
+            padding: 4px;
+            background: var(--bg-secondary);
+            border-radius: 12px;
+        }
+
+        .mode-btn {
+            padding: 10px 16px;
+            background: transparent;
+            border: none;
+            border-radius: 10px;
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .mode-btn:hover {
+            background: var(--card-hover);
+        }
+
+        .mode-btn.active {
+            background: var(--accent);
+            color: white;
+        }
+
+        .mode-btn i {
+            font-size: 14px;
+        }
+
+        /* Options List */
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .option-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px;
+            border-radius: 12px;
+            background: var(--bg-secondary);
+            border: none;
+            color: var(--text);
+            font-size: 14px;
+            cursor: pointer;
+            width: 100%;
+            text-align: left;
+        }
+
+        .option-item:hover {
+            background: var(--card-hover);
+        }
+
+        .option-item.danger {
+            color: var(--danger);
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--text);
+            color: var(--bg);
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            z-index: 2000;
+            animation: toastIn 0.3s ease;
+        }
+
+        @keyframes toastIn {
+            from {
+                opacity: 0;
+                transform: translate(-50%, 20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translate(-50%, 0);
+            }
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-secondary);
+        }
+
+        .empty-state .icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+            opacity: 0.5;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 16px;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .stat-card {
+                padding: 14px;
+            }
+
+            .stat-value {
+                font-size: 18px;
+            }
+
+            .section {
+                padding: 18px;
+            }
+
+            .chart-container {
+                height: 200px;
+            }
+
+            .delete-btn {
+                opacity: 1;
+            }
+
+            .detail-content {
+                padding: 16px;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .main-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 20px;
+            }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 3px;
+        }
+
+        /* Detail Chart */
+        .detail-chart {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .detail-chart h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .detail-chart-container {
+            height: 220px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ==================== MAIN PAGE ==================== -->
+    <div class="container" id="mainPage">
+        <div class="header">
+            <h1><i class="fa-solid fa-bolt"></i> Şarj Takip</h1>
+            <div class="header-actions">
+                <button class="icon-btn" onclick="toggleTheme()" id="themeBtn"><i class="fa-solid fa-moon"></i></button>
+                <button class="icon-btn" onclick="showSettings()"><i class="fa-solid fa-gear"></i></button>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card primary">
+                <div class="stat-icon"><i class="fa-solid fa-sack-dollar"></i></div>
+                <div class="stat-value" id="avgCost">0.00 ₺</div>
+                <div class="stat-label">Ort. kW Maliyeti</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fa-solid fa-bolt"></i></div>
+                <div class="stat-value" id="totalKw">0</div>
+                <div class="stat-label">Toplam kW</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fa-solid fa-credit-card"></i></div>
+                <div class="stat-value" id="totalPaid">0 ₺</div>
+                <div class="stat-label">Toplam Ödeme</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fa-solid fa-charging-station"></i></div>
+                <div class="stat-value" id="chargeCount">0</div>
+                <div class="stat-label">Şarj Sayısı</div>
+            </div>
+            <div class="stat-card primary">
+                <div class="stat-icon"><i class="fa-solid fa-plug-circle-bolt"></i></div>
+                <div class="stat-value" id="electricityCost">0 ₺</div>
+                <div class="stat-label">Elektrik Maliyeti</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fa-solid fa-piggy-bank"></i></div>
+                <div class="stat-value" id="savings">0 ₺</div>
+                <div class="stat-label">Tasarruf</div>
+            </div>
+        </div>
+
+        <div class="quick-actions">
+            <button class="quick-btn" onclick="showChargeModal()">
+                <i class="fa-solid fa-plug"></i> Şarj Ekle
+            </button>
+            <button class="quick-btn" onclick="showPaymentModal()">
+                <i class="fa-solid fa-money-bill-wave"></i> Ödeme Ekle
+            </button>
+        </div>
+
+        <!-- Charts -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-title">
+                    <i class="fa-solid fa-chart-line icon"></i> Grafikler
+                </div>
+            </div>
+            <div class="chart-tabs">
+                <button class="chart-tab active" onclick="showChart('monthly')">Aylık Tüketim</button>
+                <button class="chart-tab" onclick="showChart('payments')">Aylık Ödeme</button>
+                <button class="chart-tab" onclick="showChart('comparison')">Karşılaştırma</button>
+                <button class="chart-tab" onclick="showChart('yearly')">Yıllık</button>
+            </div>
+            <div class="chart-container">
+                <canvas id="mainChart"></canvas>
+            </div>
+            <div class="chart-legend" id="chartLegend"></div>
+        </div>
+
+        <div class="main-grid">
+            <!-- Recent Charges -->
+            <div class="section">
+                <div class="section-header clickable" onclick="showChargeDetail()">
+                    <div class="section-title">
+                        <i class="fa-solid fa-bolt icon"></i> Şarj Kayıtları
+                        <span class="badge" id="chargeBadge">0</span>
+                    </div>
+                </div>
+                <div class="list" id="recentCharges"></div>
+            </div>
+
+            <!-- Recent Payments -->
+            <div class="section">
+                <div class="section-header clickable" onclick="showPaymentDetail()">
+                    <div class="section-title">
+                        <i class="fa-solid fa-wallet icon"></i> Ödeme Kayıtları
+                        <span class="badge" id="paymentBadge">0</span>
+                    </div>
+                </div>
+                <div class="list" id="recentPayments"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== CHARGE DETAIL PAGE ==================== -->
+    <div class="detail-page" id="chargeDetailPage">
+        <div class="detail-header">
+            <button class="back-btn" onclick="closeDetailPage()"><i class="fa-solid fa-arrow-left"></i></button>
+            <h2><i class="fa-solid fa-chart-pie"></i> Şarj Analizi</h2>
+        </div>
+        <div class="detail-content">
+            <!-- Analysis Cards -->
+            <div class="analysis-grid" id="chargeAnalysis"></div>
+
+            <!-- Chart -->
+            <div class="detail-chart">
+                <h3>Aylık Tüketim Grafiği</h3>
+                <div class="detail-chart-container">
+                    <canvas id="chargeDetailChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Monthly Summary Table -->
+            <div class="section">
+                <h3 style="font-size: 16px; margin-bottom: 16px;">Aylık Özet</h3>
+                <div style="overflow-x: auto;">
+                    <table class="monthly-table" id="chargeMonthlyTable"></table>
+                </div>
+            </div>
+
+            <!-- All Records -->
+            <div class="section">
+                <h3 style="font-size: 16px; margin-bottom: 16px;">Tüm Kayıtlar</h3>
+                <div class="filter-tabs" id="chargeYearFilter"></div>
+                <div id="allChargesList"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== PAYMENT DETAIL PAGE ==================== -->
+    <div class="detail-page" id="paymentDetailPage">
+        <div class="detail-header">
+            <button class="back-btn" onclick="closeDetailPage()"><i class="fa-solid fa-arrow-left"></i></button>
+            <h2><i class="fa-solid fa-chart-column"></i> Ödeme Analizi</h2>
+        </div>
+        <div class="detail-content">
+            <!-- Analysis Cards -->
+            <div class="analysis-grid" id="paymentAnalysis"></div>
+
+            <!-- Chart -->
+            <div class="detail-chart">
+                <h3>Aylık Ödeme Grafiği</h3>
+                <div class="detail-chart-container">
+                    <canvas id="paymentDetailChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Monthly Summary Table -->
+            <div class="section">
+                <h3 style="font-size: 16px; margin-bottom: 16px;">Aylık Özet</h3>
+                <div style="overflow-x: auto;">
+                    <table class="monthly-table" id="paymentMonthlyTable"></table>
+                </div>
+            </div>
+
+            <!-- All Records -->
+            <div class="section">
+                <h3 style="font-size: 16px; margin-bottom: 16px;">Tüm Kayıtlar</h3>
+                <div class="filter-tabs" id="paymentYearFilter"></div>
+                <div id="allPaymentsList"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== MODALS ==================== -->
+    <!-- Charge Modal -->
+    <div class="modal-overlay" id="chargeModal" onclick="closeModalOverlay(event, 'chargeModal')">
+        <div class="modal" onclick="event.stopPropagation()">
+            <div class="modal-title">Şarj Ekle</div>
+
+            <!-- Mode Toggle -->
+            <div class="mode-toggle">
+                <button type="button" class="mode-btn active" id="autoModeBtn" onclick="switchChargeMode('auto')">
+                    <i class="fa-solid fa-calculator"></i> Otomatik Hesapla
+                </button>
+                <button type="button" class="mode-btn" id="manualModeBtn" onclick="switchChargeMode('manual')">
+                    <i class="fa-solid fa-keyboard"></i> Manuel Giriş
+                </button>
+            </div>
+
+            <div class="preview-box">
+                <div class="value" id="previewKw">0 kW</div>
+                <div class="label" id="previewLabel">Hesaplanan Tüketim</div>
+            </div>
+
+            <form onsubmit="addCharge(event)">
+                <div class="form-group">
+                    <label>Tarih</label>
+                    <input type="date" id="chargeDate" required>
+                </div>
+
+                <!-- Auto Mode Fields -->
+                <div id="autoModeFields">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Batarya (kW)</label>
+                            <input type="number" id="batteryKw" value="65" step="0.1" oninput="updatePreview()">
+                        </div>
+                        <div class="form-group">
+                            <label>Şarj %</label>
+                            <input type="number" id="chargePercent" placeholder="80" min="1" max="100"
+                                oninput="updatePreview()">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Manual Mode Fields -->
+                <div id="manualModeFields" style="display: none;">
+                    <div class="form-group">
+                        <label>Tüketim (kW)</label>
+                        <input type="number" id="manualKw" placeholder="50" step="0.1" min="0.1"
+                            oninput="updatePreview()">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Kaydet</button>
+                <button type="button" class="btn btn-secondary" onclick="closeChargeModal()">İptal</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Payment Modal -->
+    <div class="modal-overlay" id="paymentModal" onclick="closeModalOverlay(event, 'paymentModal')">
+        <div class="modal" onclick="event.stopPropagation()">
+            <div class="modal-title">Ödeme Ekle</div>
+            <form onsubmit="addPayment(event)">
+                <div class="form-group">
+                    <label>Tarih</label>
+                    <input type="date" id="paymentDate" required>
+                </div>
+                <div class="form-group">
+                    <label>Tutar (₺)</label>
+                    <input type="number" id="paymentAmount" placeholder="1000" step="0.01" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Kaydet</button>
+                <button type="button" class="btn btn-secondary" onclick="closePaymentModal()">İptal</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div class="modal-overlay" id="settingsModal" onclick="closeModalOverlay(event, 'settingsModal')">
+        <div class="modal" onclick="event.stopPropagation()">
+            <div class="modal-title">Ayarlar</div>
+            <div class="options-list">
+                <button class="option-item" onclick="generatePDFReport()"><i class="fa-solid fa-file-pdf"></i> Rapor
+                    Oluştur (PDF)</button>
+                <button class="option-item" onclick="showElectricityPriceModal()"><i
+                        class="fa-solid fa-bolt-lightning"></i> Elektrik Fiyatlarını Düzenle</button>
+                <button class="option-item" onclick="exportJSON()"><i class="fa-solid fa-download"></i> JSON
+                    İndir</button>
+                <button class="option-item" onclick="exportCSV()"><i class="fa-solid fa-file-csv"></i> CSV
+                    İndir</button>
+                <button class="option-item" onclick="triggerImport()"><i class="fa-solid fa-upload"></i> Veri İçe
+                    Aktar</button>
+                <button class="option-item danger" onclick="confirmClearData()"><i class="fa-solid fa-trash-can"></i>
+                    Tüm Verileri Sil</button>
+            </div>
+            <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">
+            <button class="btn btn-secondary" onclick="closeSettings()">Kapat</button>
+        </div>
+    </div>
+
+    <!-- Delete Modal -->
+    <div class="modal-overlay" id="deleteModal" onclick="closeModalOverlay(event, 'deleteModal')">
+        <div class="modal" onclick="event.stopPropagation()">
+            <div class="modal-title">Silmek istediğinize emin misiniz?</div>
+            <button class="btn btn-danger" id="confirmDeleteBtn">Evet, Sil</button>
+            <button class="btn btn-secondary" onclick="closeDeleteModal()">İptal</button>
+        </div>
+    </div>
+
+    <!-- Electricity Price Modal -->
+    <div class="modal-overlay" id="electricityPriceModal" onclick="closeModalOverlay(event, 'electricityPriceModal')">
+        <div class="modal" onclick="event.stopPropagation()">
+            <div class="modal-title">Elektrik Fiyatları (240 kWh Üz., KDV Dahil)</div>
+            <form onsubmit="saveElectricityPrices(event)">
+                <div class="form-group">
+                    <label>2024 Yılı (₺/kWh)</label>
+                    <input type="number" id="price2024" step="0.01" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label>2025 Yılı (₺/kWh)</label>
+                    <input type="number" id="price2025" step="0.01" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label>2026 Yılı (₺/kWh)</label>
+                    <input type="number" id="price2026" step="0.01" min="0" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Kaydet</button>
+                <button type="button" class="btn btn-secondary" onclick="closeElectricityPriceModal()">Vazgeç</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // ==================== DATA ====================
+        let charges = [];
+        let payments = [];
+        let mainChart = null;
+        let chargeDetailChart = null;
+        let paymentDetailChart = null;
+        let currentChartType = 'monthly';
+        let chargeYearFilter = 'all';
+        let paymentYearFilter = 'all';
+        let chargeMode = 'auto'; // 'auto' or 'manual'
+
+        // Türkiye Elektrik Tarifeleri (240 kWh üzeri, KDV dahil, ₺/kWh)
+        let electricityPrices = {
+            '2024': 2.25,  // 2024 yılı 240 kWh üzeri tarife
+            '2025': 3.92,  // 2025 yılı 240 kWh üzeri tarife (Ocak 2025)
+            '2026': 4.50   // Tahmini (kullanıcı verisi olmadığı için)
+        };
+
+        // Elektrik fiyatlarını yükle
+        function loadElectricityPrices() {
+            const saved = localStorage.getItem('ev_electricity_prices');
+            if (saved) {
+                electricityPrices = JSON.parse(saved);
+            }
+        }
+
+        // Elektrik fiyatlarını kaydet
+        function saveElectricityPricesData() {
+            localStorage.setItem('ev_electricity_prices', JSON.stringify(electricityPrices));
+        }
+
+        // Tarihe göre elektrik fiyatını döndür
+        function getElectricityPrice(date) {
+            const year = date.substring(0, 4);
+            return electricityPrices[year] || electricityPrices['2025']; // Varsayılan 2025
+        }
+
+        // Şarj maliyetini hesapla
+        function calculateChargeCost(date, consumption) {
+            const pricePerKwh = getElectricityPrice(date);
+            return consumption * pricePerKwh;
+        }
+
+        // Toplam elektrik maliyetini hesapla
+        function calculateTotalElectricityCost() {
+            return charges.reduce((total, charge) => {
+                return total + calculateChargeCost(charge.date, charge.consumption);
+            }, 0);
+        }
+
+        const initialCharges = [
+            { date: "2024-12-09", capacity: 65, percent: 75, consumption: 49 },
+            { date: "2024-12-25", capacity: 65, percent: 80, consumption: 52 },
+            { date: "2025-01-04", capacity: 65, percent: 78, consumption: 51 },
+            { date: "2025-01-13", capacity: 65, percent: 80, consumption: 52 },
+            { date: "2025-01-23", capacity: 65, percent: 80, consumption: 52 },
+            { date: "2025-01-29", capacity: 65, percent: 76, consumption: 50 },
+            { date: "2025-02-08", capacity: 65, percent: 59, consumption: 39 },
+            { date: "2025-02-15", capacity: 65, percent: 83, consumption: 54 },
+            { date: "2025-02-24", capacity: 65, percent: 78, consumption: 51 },
+            { date: "2025-03-05", capacity: 65, percent: 78, consumption: 51 },
+            { date: "2025-03-13", capacity: 65, percent: 80, consumption: 52 },
+            { date: "2025-03-22", capacity: 65, percent: 54, consumption: 35 },
+            { date: "2025-03-24", capacity: 65, percent: 80, consumption: 52 },
+            { date: "2025-03-25", capacity: 65, percent: 59, consumption: 39 },
+            { date: "2025-04-07", capacity: 65, percent: 79, consumption: 52 },
+            { date: "2025-04-19", capacity: 65, percent: 86, consumption: 56 },
+            { date: "2025-04-28", capacity: 65, percent: 55, consumption: 36 },
+            { date: "2025-05-08", capacity: 65, percent: 88, consumption: 57 },
+            { date: "2025-05-14", capacity: 65, percent: 76, consumption: 50 },
+            { date: "2025-05-20", capacity: 65, percent: 86, consumption: 55.9 },
+            { date: "2025-05-28", capacity: 65, percent: 85, consumption: 55 },
+            { date: "2025-06-05", capacity: 65, percent: 69, consumption: 45 },
+            { date: "2025-06-09", capacity: 65, percent: 61, consumption: 40 },
+            { date: "2025-06-14", capacity: 65, percent: 63, consumption: 41 },
+            { date: "2025-06-15", capacity: 65, percent: 58, consumption: 38 },
+            { date: "2025-06-21", capacity: 65, percent: 77, consumption: 50 },
+            { date: "2025-06-26", capacity: 65, percent: 78, consumption: 51 },
+            { date: "2025-07-02", capacity: 65, percent: 83, consumption: 54 },
+            { date: "2025-07-12", capacity: 65, percent: 65, consumption: 42 },
+            { date: "2025-07-17", capacity: 65, percent: 63, consumption: 41 },
+            { date: "2025-07-23", capacity: 65, percent: 61, consumption: 40 },
+            { date: "2025-07-31", capacity: 65, percent: 82, consumption: 53 },
+            { date: "2025-08-13", capacity: 65, percent: 83, consumption: 54 },
+            { date: "2025-08-14", capacity: 65, percent: 37, consumption: 24 },
+            { date: "2025-08-16", capacity: 65, percent: 68, consumption: 44 },
+            { date: "2025-08-19", capacity: 65, percent: 82, consumption: 53 },
+            { date: "2025-08-25", capacity: 65, percent: 84, consumption: 55 },
+            { date: "2025-08-29", capacity: 65, percent: 64, consumption: 42 },
+            { date: "2025-08-30", capacity: 65, percent: 39, consumption: 26 },
+            { date: "2025-08-31", capacity: 65, percent: 78, consumption: 53 },
+            { date: "2025-09-10", capacity: 65, percent: 64, consumption: 42 },
+            { date: "2025-09-17", capacity: 65, percent: 89, consumption: 58 },
+            { date: "2025-09-29", capacity: 65, percent: 72, consumption: 47 },
+            { date: "2025-10-06", capacity: 65, percent: 69, consumption: 45 },
+            { date: "2025-10-13", capacity: 65, percent: 68, consumption: 44 },
+            { date: "2025-10-21", capacity: 65, percent: 86, consumption: 56 },
+            { date: "2025-10-29", capacity: 65, percent: 66, consumption: 43 },
+            { date: "2025-11-04", capacity: 65, percent: 67, consumption: 44 },
+            { date: "2025-11-11", capacity: 65, percent: 62, consumption: 41 },
+            { date: "2025-11-17", capacity: 65, percent: 58, consumption: 38 },
+            { date: "2025-12-03", capacity: 65, percent: 86, consumption: 56 },
+            { date: "2025-12-09", capacity: 65, percent: 53, consumption: 35 },
+            { date: "2025-12-15", capacity: 65, percent: 62, consumption: 41 }
+        ];
+
+        const initialPayments = [
+            { date: "2025-01-03", amount: 350 },
+            { date: "2025-01-03", amount: 1000 },
+            { date: "2025-02-07", amount: 1000 },
+            { date: "2025-03-05", amount: 1000 },
+            { date: "2025-03-25", amount: 1150 },
+            { date: "2025-05-08", amount: 1500 },
+            { date: "2025-05-15", amount: 1000 },
+            { date: "2025-06-14", amount: 1000 },
+            { date: "2025-07-01", amount: 1000 },
+            { date: "2025-07-22", amount: 1000 },
+            { date: "2025-08-16", amount: 1000 },
+            { date: "2025-08-27", amount: 1000 },
+            { date: "2025-09-17", amount: 1000 },
+            { date: "2025-10-20", amount: 1000 },
+            { date: "2025-11-16", amount: 1500 },
+            { date: "2025-12-20", amount: 1000 }
+        ];
+
+        const monthNames = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'];
+        const monthNamesShort = ['Oca', 'Şub', 'Mar', 'Nis', 'May', 'Haz', 'Tem', 'Ağu', 'Eyl', 'Eki', 'Kas', 'Ara'];
+
+        // ==================== INIT ====================
+        document.addEventListener('DOMContentLoaded', () => {
+            loadTheme();
+            loadElectricityPrices();
+            loadData();
+            render();
+            setTodayDate();
+        });
+
+        function loadData() {
+            const savedCharges = localStorage.getItem('ev_charges_v3');
+            const savedPayments = localStorage.getItem('ev_payments_v3');
+            charges = savedCharges ? JSON.parse(savedCharges) : [...initialCharges];
+            payments = savedPayments ? JSON.parse(savedPayments) : [...initialPayments];
+            if (!savedCharges) saveCharges();
+            if (!savedPayments) savePayments();
+        }
+
+        function saveCharges() { localStorage.setItem('ev_charges_v3', JSON.stringify(charges)); }
+        function savePayments() { localStorage.setItem('ev_payments_v3', JSON.stringify(payments)); }
+
+        // ==================== THEME ====================
+        function loadTheme() {
+            const theme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', theme);
+            updateThemeIcon(theme);
+        }
+
+        function toggleTheme() {
+            const current = document.documentElement.getAttribute('data-theme');
+            const next = current === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
+            updateThemeIcon(next);
+            if (mainChart) updateChart();
+        }
+
+        function updateThemeIcon(theme) {
+            const btn = document.getElementById('themeBtn');
+            btn.innerHTML = theme === 'dark' ? '\u003ci class="fa-solid fa-sun"\u003e\u003c/i\u003e' : '\u003ci class="fa-solid fa-moon"\u003e\u003c/i\u003e';
+        }
+
+        // ==================== RENDER ====================
+        function render() {
+            updateStats();
+            renderRecentCharges();
+            renderRecentPayments();
+            initChart();
+        }
+
+        function updateStats() {
+            const totalKw = charges.reduce((s, c) => s + c.consumption, 0);
+            const totalPaid = payments.reduce((s, p) => s + p.amount, 0);
+            const avgCost = totalKw > 0 ? totalPaid / totalKw : 0;
+
+            document.getElementById('totalKw').textContent = totalKw.toFixed(1);
+            document.getElementById('totalPaid').textContent = totalPaid.toLocaleString('tr-TR') + ' ₺';
+            document.getElementById('avgCost').textContent = avgCost.toFixed(2) + ' ₺';
+            document.getElementById('chargeCount').textContent = charges.length;
+            document.getElementById('chargeBadge').textContent = charges.length;
+            document.getElementById('paymentBadge').textContent = payments.length;
+
+            // Elektrik maliyetini hesapla (gerçek tarife fiyatları ile)
+            const electricityCost = calculateTotalElectricityCost();
+
+            // Tasarruf = Ödenen tutar - Gerçek elektrik maliyeti
+            const savings = totalPaid - electricityCost;
+
+            // Yeni istatistikler
+            document.getElementById('electricityCost').textContent = electricityCost.toFixed(2) + ' ₺';
+            const savingsEl = document.getElementById('savings');
+            savingsEl.textContent = (savings >= 0 ? '+' : '') + savings.toFixed(2) + ' ₺';
+            // Tasarruf pozitifse yeşil, negatifse kırmızı renk
+            savingsEl.style.color = savings >= 0 ? 'var(--accent)' : 'var(--danger)';
+        }
+
+        function setTodayDate() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('chargeDate').value = today;
+            document.getElementById('paymentDate').value = today;
+        }
+
+        // ==================== RECENT LISTS (5 items) ====================
+        function renderRecentCharges() {
+            const container = document.getElementById('recentCharges');
+            const sorted = [...charges].sort((a, b) => new Date(b.date) - new Date(a.date));
+            const recent = sorted.slice(0, 5);
+
+            if (recent.length === 0) {
+                container.innerHTML = '<div class="empty-state"><div class="icon"><i class="fa-solid fa-bolt"></i></div>Henüz kayıt yok</div>';
+                return;
+            }
+
+            container.innerHTML = recent.map(c => {
+                const idx = charges.findIndex(x => x.date === c.date && x.consumption === c.consumption);
+                return `
+            <div class="list-item">
+                <div class="item-left">
+                    <div class="item-icon charge"><i class="fa-solid fa-bolt"></i></div>
+                    <div class="item-info">
+                        <h4>${formatDateShort(c.date)}</h4>
+                        <p>${c.percent}% şarj</p>
+                    </div>
+                </div>
+                <div class="item-right">
+                    <div class="item-value">
+                        <span class="amount">${c.consumption}</span>
+                        <span class="unit"> kW</span>
+                    </div>
+                    <button class="delete-btn" onclick="event.stopPropagation(); deleteCharge(${idx})"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+            </div>
+        `;
+            }).join('');
+        }
+
+        function renderRecentPayments() {
+            const container = document.getElementById('recentPayments');
+            const sorted = [...payments].sort((a, b) => new Date(b.date) - new Date(a.date));
+            const recent = sorted.slice(0, 5);
+
+            if (recent.length === 0) {
+                container.innerHTML = '<div class="empty-state"><div class="icon"><i class="fa-solid fa-wallet"></i></div>Henüz kayıt yok</div>';
+                return;
+            }
+
+            container.innerHTML = recent.map(p => {
+                const idx = payments.findIndex(x => x.date === p.date && x.amount === p.amount);
+                return `
+            <div class="list-item">
+                <div class="item-left">
+                    <div class="item-icon payment"><i class="fa-solid fa-credit-card"></i></div>
+                    <div class="item-info">
+                        <h4>${formatDateShort(p.date)}</h4>
+                        <p>Ödeme</p>
+                    </div>
+                </div>
+                <div class="item-right">
+                    <div class="item-value">
+                        <span class="amount">${p.amount.toLocaleString('tr-TR')}</span>
+                        <span class="unit"> ₺</span>
+                    </div>
+                    <button class="delete-btn" onclick="event.stopPropagation(); deletePayment(${idx})"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+            </div>
+        `;
+            }).join('');
+        }
+
+        // ==================== DETAIL PAGES ====================
+        function showChargeDetail() {
+            document.getElementById('chargeDetailPage').classList.add('active');
+            document.body.style.overflow = 'hidden';
+            renderChargeAnalysis();
+            renderChargeDetailChart();
+            renderChargeMonthlyTable();
+            renderAllCharges();
+        }
+
+        function showPaymentDetail() {
+            document.getElementById('paymentDetailPage').classList.add('active');
+            document.body.style.overflow = 'hidden';
+            renderPaymentAnalysis();
+            renderPaymentDetailChart();
+            renderPaymentMonthlyTable();
+            renderAllPayments();
+        }
+
+        function closeDetailPage() {
+            document.getElementById('chargeDetailPage').classList.remove('active');
+            document.getElementById('paymentDetailPage').classList.remove('active');
+            document.body.style.overflow = '';
+            chargeYearFilter = 'all';
+            paymentYearFilter = 'all';
+        }
+
+        // ==================== CHARGE ANALYSIS ====================
+        function renderChargeAnalysis() {
+            const totalKw = charges.reduce((s, c) => s + c.consumption, 0);
+            const avgCharge = charges.length > 0 ? totalKw / charges.length : 0;
+            const maxCharge = charges.length > 0 ? Math.max(...charges.map(c => c.consumption)) : 0;
+            const minCharge = charges.length > 0 ? Math.min(...charges.map(c => c.consumption)) : 0;
+            const months = new Set(charges.map(c => c.date.substring(0, 7)));
+            const avgMonthly = months.size > 0 ? totalKw / months.size : 0;
+            const totalElectricityCost = calculateTotalElectricityCost();
+            const avgElectricityCost = months.size > 0 ? totalElectricityCost / months.size : 0;
+
+            document.getElementById('chargeAnalysis').innerHTML = `
+        <div class="analysis-card">
+            <div class="value">${totalKw.toFixed(1)}</div>
+            <div class="label">Toplam kW</div>
+        </div>
+        <div class="analysis-card blue">
+            <div class="value">${charges.length}</div>
+            <div class="label">Şarj Sayısı</div>
+        </div>
+        <div class="analysis-card purple">
+            <div class="value">${avgCharge.toFixed(1)}</div>
+            <div class="label">Ort. Şarj (kW)</div>
+        </div>
+        <div class="analysis-card">
+            <div class="value">${avgMonthly.toFixed(1)}</div>
+            <div class="label">Aylık Ort. (kW)</div>
+        </div>
+        <div class="analysis-card blue">
+            <div class="value">${maxCharge}</div>
+            <div class="label">Maks. Şarj (kW)</div>
+        </div>
+        <div class="analysis-card purple">
+            <div class="value">${minCharge}</div>
+            <div class="label">Min. Şarj (kW)</div>
+        </div>
+        <div class="analysis-card blue">
+            <div class="value">${totalElectricityCost.toFixed(2)} ₺</div>
+            <div class="label">Toplam Elektrik Maliyeti</div>
+        </div>
+        <div class="analysis-card purple">
+            <div class="value">${avgElectricityCost.toFixed(2)} ₺</div>
+            <div class="label">Aylık Ort. Maliyet</div>
+        </div>
+    `;
+        }
+
+        function renderChargeDetailChart() {
+            const ctx = document.getElementById('chargeDetailChart').getContext('2d');
+            const monthly = getMonthlyData(charges, 'consumption');
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+
+            if (chargeDetailChart) chargeDetailChart.destroy();
+
+            chargeDetailChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: Object.keys(monthly).map(m => {
+                        const [y, mon] = m.split('-');
+                        return `${monthNamesShort[parseInt(mon) - 1]} ${y.slice(2)}`;
+                    }),
+                    datasets: [{
+                        label: 'Tüketim (kW)',
+                        data: Object.values(monthly),
+                        borderColor: '#00b894',
+                        backgroundColor: 'rgba(0, 184, 148, 0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 4,
+                        pointBackgroundColor: '#00b894'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { grid: { display: false }, ticks: { color: isDark ? '#8e8e93' : '#86868b' } },
+                        y: { grid: { color: isDark ? '#38383a' : '#e5e5e5' }, ticks: { color: isDark ? '#8e8e93' : '#86868b' } }
+                    }
+                }
+            });
+        }
+
+        function renderChargeMonthlyTable() {
+            const monthly = getMonthlyData(charges, 'consumption');
+            const countMonthly = {};
+            charges.forEach(c => {
+                const m = c.date.substring(0, 7);
+                countMonthly[m] = (countMonthly[m] || 0) + 1;
+            });
+
+            let html = `
+        <thead>
+            <tr><th>Ay</th><th>Şarj</th><th>Toplam kW</th></tr>
+        </thead>
+        <tbody>
+    `;
+
+            Object.keys(monthly).sort().reverse().forEach(m => {
+                const [y, mon] = m.split('-');
+                html += `<tr>
+            <td>${monthNames[parseInt(mon) - 1]} ${y}</td>
+            <td>${countMonthly[m]}</td>
+            <td>${monthly[m].toFixed(1)} kW</td>
+        </tr>`;
+            });
+
+            html += '</tbody>';
+            document.getElementById('chargeMonthlyTable').innerHTML = html;
+        }
+
+        function renderAllCharges() {
+            renderYearFilter('charge');
+            const container = document.getElementById('allChargesList');
+
+            let filtered = [...charges];
+            if (chargeYearFilter !== 'all') {
+                filtered = charges.filter(c => c.date.startsWith(chargeYearFilter));
+            }
+
+            const grouped = groupByYear(filtered);
+
+            if (Object.keys(grouped).length === 0) {
+                container.innerHTML = '<div class="empty-state"><div class="icon">⚡</div>Kayıt yok</div>';
+                return;
+            }
+
+            let html = '';
+            Object.keys(grouped).sort().reverse().forEach(year => {
+                const yearTotal = grouped[year].reduce((s, c) => s + c.consumption, 0);
+                html += `
+            <div class="year-group">
+                <div class="year-header">
+                    <span>${year}</span>
+                    <span class="year-total">${yearTotal.toFixed(1)} kW</span>
+                </div>
+                <div class="list">
+        `;
+                grouped[year].sort((a, b) => new Date(b.date) - new Date(a.date)).forEach(c => {
+                    const idx = charges.findIndex(x => x.date === c.date && x.consumption === c.consumption);
+                    html += `
+                <div class="list-item">
+                    <div class="item-left">
+                        <div class="item-icon charge"><i class="fa-solid fa-bolt"></i></div>
+                        <div class="item-info">
+                            <h4>${formatDate(c.date)}</h4>
+                            <p>${c.percent}% • ${c.capacity} kW</p>
+                        </div>
+                    </div>
+                    <div class="item-right">
+                        <div class="item-value">
+                            <span class="amount">${c.consumption}</span>
+                            <span class="unit"> kW</span>
+                        </div>
+                        <button class="delete-btn" onclick="deleteCharge(${idx})"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                </div>
+            `;
+                });
+                html += '</div></div>';
+            });
+
+            container.innerHTML = html;
+        }
+
+        // ==================== PAYMENT ANALYSIS ====================
+        function renderPaymentAnalysis() {
+            const totalPaid = payments.reduce((s, p) => s + p.amount, 0);
+            const avgPayment = payments.length > 0 ? totalPaid / payments.length : 0;
+            const maxPayment = payments.length > 0 ? Math.max(...payments.map(p => p.amount)) : 0;
+            const minPayment = payments.length > 0 ? Math.min(...payments.map(p => p.amount)) : 0;
+            const months = new Set(payments.map(p => p.date.substring(0, 7)));
+            const avgMonthly = months.size > 0 ? totalPaid / months.size : 0;
+            const totalKw = charges.reduce((s, c) => s + c.consumption, 0);
+            const costPerKw = totalKw > 0 ? totalPaid / totalKw : 0;
+
+            document.getElementById('paymentAnalysis').innerHTML = `
+        <div class="analysis-card">
+            <div class="value">${totalPaid.toLocaleString('tr-TR')}</div>
+            <div class="label">Toplam ₺</div>
+        </div>
+        <div class="analysis-card blue">
+            <div class="value">${payments.length}</div>
+            <div class="label">Ödeme Sayısı</div>
+        </div>
+        <div class="analysis-card purple">
+            <div class="value">${avgPayment.toFixed(0)}</div>
+            <div class="label">Ort. Ödeme (₺)</div>
+        </div>
+        <div class="analysis-card">
+            <div class="value">${avgMonthly.toFixed(0)}</div>
+            <div class="label">Aylık Ort. (₺)</div>
+        </div>
+        <div class="analysis-card blue">
+            <div class="value">${costPerKw.toFixed(2)}</div>
+            <div class="label">₺/kW Maliyet</div>
+        </div>
+        <div class="analysis-card purple">
+            <div class="value">${maxPayment.toLocaleString('tr-TR')}</div>
+            <div class="label">Maks. Ödeme (₺)</div>
+        </div>
+    `;
+        }
+
+        function renderPaymentDetailChart() {
+            const ctx = document.getElementById('paymentDetailChart').getContext('2d');
+            const monthly = getMonthlyData(payments, 'amount');
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+
+            if (paymentDetailChart) paymentDetailChart.destroy();
+
+            paymentDetailChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: Object.keys(monthly).map(m => {
+                        const [y, mon] = m.split('-');
+                        return `${monthNamesShort[parseInt(mon) - 1]} ${y.slice(2)}`;
+                    }),
+                    datasets: [{
+                        label: 'Ödeme (₺)',
+                        data: Object.values(monthly),
+                        borderColor: '#0984e3',
+                        backgroundColor: 'rgba(9, 132, 227, 0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 4,
+                        pointBackgroundColor: '#0984e3'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { grid: { display: false }, ticks: { color: isDark ? '#8e8e93' : '#86868b' } },
+                        y: { grid: { color: isDark ? '#38383a' : '#e5e5e5' }, ticks: { color: isDark ? '#8e8e93' : '#86868b' } }
+                    }
+                }
+            });
+        }
+
+        function renderPaymentMonthlyTable() {
+            const monthly = getMonthlyData(payments, 'amount');
+            const countMonthly = {};
+            payments.forEach(p => {
+                const m = p.date.substring(0, 7);
+                countMonthly[m] = (countMonthly[m] || 0) + 1;
+            });
+
+            let html = `
+        <thead>
+            <tr><th>Ay</th><th>Ödeme</th><th>Toplam ₺</th></tr>
+        </thead>
+        <tbody>
+    `;
+
+            Object.keys(monthly).sort().reverse().forEach(m => {
+                const [y, mon] = m.split('-');
+                html += `<tr>
+            <td>${monthNames[parseInt(mon) - 1]} ${y}</td>
+            <td>${countMonthly[m]}</td>
+            <td>${monthly[m].toLocaleString('tr-TR')} ₺</td>
+        </tr>`;
+            });
+
+            html += '</tbody>';
+            document.getElementById('paymentMonthlyTable').innerHTML = html;
+        }
+
+        function renderAllPayments() {
+            renderYearFilter('payment');
+            const container = document.getElementById('allPaymentsList');
+
+            let filtered = [...payments];
+            if (paymentYearFilter !== 'all') {
+                filtered = payments.filter(p => p.date.startsWith(paymentYearFilter));
+            }
+
+            const grouped = groupByYear(filtered);
+
+            if (Object.keys(grouped).length === 0) {
+                container.innerHTML = '<div class="empty-state"><div class="icon"><i class="fa-solid fa-wallet"></i></div>Kayıt yok</div>';
+                return;
+            }
+
+            let html = '';
+            Object.keys(grouped).sort().reverse().forEach(year => {
+                const yearTotal = grouped[year].reduce((s, p) => s + p.amount, 0);
+                html += `
+            <div class="year-group">
+                <div class="year-header">
+                    <span>${year}</span>
+                    <span class="year-total">${yearTotal.toLocaleString('tr-TR')} ₺</span>
+                </div>
+                <div class="list">
+        `;
+                grouped[year].sort((a, b) => new Date(b.date) - new Date(a.date)).forEach(p => {
+                    const idx = payments.findIndex(x => x.date === p.date && x.amount === p.amount);
+                    html += `
+                <div class="list-item">
+                    <div class="item-left">
+                        <div class="item-icon payment"><i class="fa-solid fa-credit-card"></i></div>
+                        <div class="item-info">
+                            <h4>${formatDate(p.date)}</h4>
+                            <p>Ödeme</p>
+                        </div>
+                    </div>
+                    <div class="item-right">
+                        <div class="item-value">
+                            <span class="amount">${p.amount.toLocaleString('tr-TR')}</span>
+                            <span class="unit"> ₺</span>
+                        </div>
+                        <button class="delete-btn" onclick="deletePayment(${idx})"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                </div>
+            `;
+                });
+                html += '</div></div>';
+            });
+
+            container.innerHTML = html;
+        }
+
+        function renderYearFilter(type) {
+            const data = type === 'charge' ? charges : payments;
+            const years = [...new Set(data.map(d => d.date.substring(0, 4)))].sort().reverse();
+            const currentFilter = type === 'charge' ? chargeYearFilter : paymentYearFilter;
+            const containerId = type === 'charge' ? 'chargeYearFilter' : 'paymentYearFilter';
+
+            let html = `<button class="filter-tab ${currentFilter === 'all' ? 'active' : ''}" onclick="filterYear('${type}', 'all')">Tümü</button>`;
+            years.forEach(year => {
+                html += `<button class="filter-tab ${currentFilter === year ? 'active' : ''}" onclick="filterYear('${type}', '${year}')">${year}</button>`;
+            });
+
+            document.getElementById(containerId).innerHTML = html;
+        }
+
+        function filterYear(type, year) {
+            if (type === 'charge') {
+                chargeYearFilter = year;
+                renderAllCharges();
+            } else {
+                paymentYearFilter = year;
+                renderAllPayments();
+            }
+        }
+
+        // ==================== MAIN CHARTS ====================
+        function initChart() {
+            const ctx = document.getElementById('mainChart').getContext('2d');
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+
+            Chart.defaults.color = isDark ? '#8e8e93' : '#86868b';
+            Chart.defaults.borderColor = isDark ? '#38383a' : '#e5e5e5';
+
+            if (mainChart) mainChart.destroy();
+
+            mainChart = new Chart(ctx, {
+                type: 'bar',
+                data: getChartData('monthly'),
+                options: getChartOptions()
+            });
+            updateLegend();
+        }
+
+        function showChart(type) {
+            currentChartType = type;
+            document.querySelectorAll('.chart-tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            updateChart();
+        }
+
+        function updateChart() {
+            if (!mainChart) return;
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            Chart.defaults.color = isDark ? '#8e8e93' : '#86868b';
+            Chart.defaults.borderColor = isDark ? '#38383a' : '#e5e5e5';
+
+            mainChart.data = getChartData(currentChartType);
+            mainChart.options = getChartOptions();
+            mainChart.update();
+            updateLegend();
+        }
+
+        function getChartData(type) {
+            if (type === 'monthly') {
+                const monthly = getMonthlyData(charges, 'consumption');
+                return {
+                    labels: Object.keys(monthly).map(m => `${monthNamesShort[parseInt(m.split('-')[1]) - 1]} ${m.split('-')[0].slice(2)}`),
+                    datasets: [{ label: 'kW', data: Object.values(monthly), backgroundColor: 'rgba(0, 184, 148, 0.8)', borderRadius: 6 }]
+                };
+            }
+            if (type === 'payments') {
+                const monthly = getMonthlyData(payments, 'amount');
+                return {
+                    labels: Object.keys(monthly).map(m => `${monthNamesShort[parseInt(m.split('-')[1]) - 1]} ${m.split('-')[0].slice(2)}`),
+                    datasets: [{ label: '₺', data: Object.values(monthly), backgroundColor: 'rgba(9, 132, 227, 0.8)', borderRadius: 6 }]
+                };
+            }
+            if (type === 'comparison') {
+                const cm = getMonthlyData(charges, 'consumption');
+                const pm = getMonthlyData(payments, 'amount');
+
+                // Aylık elektrik maliyetini hesapla
+                const electricCostMonthly = {};
+                charges.forEach(charge => {
+                    const month = charge.date.substring(0, 7);
+                    const cost = calculateChargeCost(charge.date, charge.consumption)
+                        ; electricCostMonthly[month] = (electricCostMonthly[month] || 0) + cost;
+                });
+
+                const allMonths = [...new Set([...Object.keys(cm), ...Object.keys(pm)])].sort();
+                return {
+                    labels: allMonths.map(m => `${monthNamesShort[parseInt(m.split('-')[1]) - 1]} ${m.split('-')[0].slice(2)}`),
+                    datasets: [
+                        { label: 'kW', data: allMonths.map(m => cm[m] || 0), backgroundColor: 'rgba(0, 184, 148, 0.8)', borderRadius: 6 },
+                        { label: 'Elkt. Mal. (₺/10)', data: allMonths.map(m => (electricCostMonthly[m] || 0) / 10), backgroundColor: 'rgba(255, 152, 0, 0.8)', borderRadius: 6 },
+                        { label: 'Ödeme (₺/10)', data: allMonths.map(m => (pm[m] || 0) / 10), backgroundColor: 'rgba(9, 132, 227, 0.8)', borderRadius: 6 }
+                    ]
+                };
+            }
+            if (type === 'yearly') {
+                const years = [...new Set([...charges.map(c => c.date.substring(0, 4)), ...payments.map(p => p.date.substring(0, 4))])].sort();
+                const yc = {}, yp = {};
+                charges.forEach(c => { const y = c.date.substring(0, 4); yc[y] = (yc[y] || 0) + c.consumption; });
+                payments.forEach(p => { const y = p.date.substring(0, 4); yp[y] = (yp[y] || 0) + p.amount; });
+                return {
+                    labels: years,
+                    datasets: [
+                        { label: 'kW', data: years.map(y => yc[y] || 0), backgroundColor: 'rgba(0, 184, 148, 0.8)', borderRadius: 6 },
+                        { label: '₺/10', data: years.map(y => (yp[y] || 0) / 10), backgroundColor: 'rgba(9, 132, 227, 0.8)', borderRadius: 6 }
+                    ]
+                };
+            }
+            return { labels: [], datasets: [] };
+        }
+
+        function getChartOptions() {
+            return {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false }, tooltip: { padding: 10, cornerRadius: 8 } },
+                scales: {
+                    x: { grid: { display: false }, ticks: { font: { size: 10 } } },
+                    y: { grid: { color: Chart.defaults.borderColor }, ticks: { font: { size: 10 } } }
+                }
+            };
+        }
+
+        function updateLegend() {
+            const legend = document.getElementById('chartLegend');
+            if (currentChartType === 'monthly') {
+                legend.innerHTML = '<div class="legend-item"><div class="legend-dot" style="background:rgba(0,184,148,0.8)"></div>Tüketim (kW)</div>';
+            } else if (currentChartType === 'payments') {
+                legend.innerHTML = '<div class="legend-item"><div class="legend-dot" style="background:rgba(9,132,227,0.8)"></div>Ödeme (₺)</div>';
+            } else {
+                legend.innerHTML = '<div class="legend-item"><div class="legend-dot" style="background:rgba(0,184,148,0.8)"></div>Tüketim (kW)</div><div class="legend-item"><div class="legend-dot" style="background:rgba(255,152,0,0.8)"></div>Elektrik Maliyeti (₺/10)</div><div class="legend-item"><div class="legend-dot" style="background:rgba(9,132,227,0.8)"></div>Ödeme (₺/10)</div>';
+            }
+        }
+
+        // ==================== HELPERS ====================
+        function getMonthlyData(data, field) {
+            const monthly = {};
+            data.forEach(item => {
+                const m = item.date.substring(0, 7);
+                monthly[m] = (monthly[m] || 0) + item[field];
+            });
+            return Object.fromEntries(Object.entries(monthly).sort());
+        }
+
+        function groupByYear(data) {
+            const grouped = {};
+            data.forEach(item => {
+                const y = item.date.substring(0, 4);
+                if (!grouped[y]) grouped[y] = [];
+                grouped[y].push(item);
+            });
+            return grouped;
+        }
+
+        function formatDate(str) {
+            const d = new Date(str);
+            return `${d.getDate()} ${monthNames[d.getMonth()]} ${d.getFullYear()}`;
+        }
+
+        function formatDateShort(str) {
+            const d = new Date(str);
+            return `${d.getDate()} ${monthNamesShort[d.getMonth()]}`;
+        }
+
+        // ==================== MODALS ====================
+        function showChargeModal() {
+            document.getElementById('chargeModal').classList.add('active');
+            // Reset to auto mode
+            switchChargeMode('auto');
+            document.getElementById('chargePercent').value = '';
+            document.getElementById('manualKw').value = '';
+            updatePreview();
+        }
+        function closeChargeModal() { document.getElementById('chargeModal').classList.remove('active'); }
+        function showPaymentModal() { document.getElementById('paymentModal').classList.add('active'); document.getElementById('paymentAmount').value = ''; }
+        function closePaymentModal() { document.getElementById('paymentModal').classList.remove('active'); }
+        function showSettings() { document.getElementById('settingsModal').classList.add('active'); }
+        function closeSettings() { document.getElementById('settingsModal').classList.remove('active'); }
+
+        function showElectricityPriceModal() {
+            // Mevcut fiyatları inputlara aktar
+            document.getElementById('price2024').value = electricityPrices['2024'];
+            document.getElementById('price2025').value = electricityPrices['2025'];
+            document.getElementById('price2026').value = electricityPrices['2026'];
+            document.getElementById('electricityPriceModal').classList.add('active');
+        }
+
+        function closeElectricityPriceModal() {
+            document.getElementById('electricityPriceModal').classList.remove('active');
+        }
+
+        function saveElectricityPrices(e) {
+            e.preventDefault();
+            electricityPrices['2024'] = parseFloat(document.getElementById('price2024').value);
+            electricityPrices['2025'] = parseFloat(document.getElementById('price2025').value);
+            electricityPrices['2026'] = parseFloat(document.getElementById('price2026').value);
+            saveElectricityPricesData();
+            render(); // İstatistikleri güncelle
+            closeElectricityPriceModal();
+            toast('Elektrik fiyatları güncellendi');
+        }
+
+        function closeDeleteModal() { document.getElementById('deleteModal').classList.remove('active'); }
+        function closeModalOverlay(e, id) { if (e.target.classList.contains('modal-overlay')) document.getElementById(id).classList.remove('active'); }
+        function updatePreview() {
+            if (chargeMode === 'auto') {
+                const b = parseFloat(document.getElementById('batteryKw').value) || 0;
+                const p = parseFloat(document.getElementById('chargePercent').value) || 0;
+                document.getElementById('previewKw').textContent = (b * p / 100).toFixed(1) + ' kW';
+            } else {
+                const kw = parseFloat(document.getElementById('manualKw').value) || 0;
+                document.getElementById('previewKw').textContent = kw.toFixed(1) + ' kW';
+            }
+        }
+
+        function switchChargeMode(mode) {
+            chargeMode = mode;
+            const autoBtn = document.getElementById('autoModeBtn');
+            const manualBtn = document.getElementById('manualModeBtn');
+            const autoFields = document.getElementById('autoModeFields');
+            const manualFields = document.getElementById('manualModeFields');
+            const previewLabel = document.getElementById('previewLabel');
+
+            if (mode === 'auto') {
+                autoBtn.classList.add('active');
+                manualBtn.classList.remove('active');
+                autoFields.style.display = 'block';
+                manualFields.style.display = 'none';
+                previewLabel.textContent = 'Hesaplanan Tüketim';
+                document.getElementById('chargePercent').setAttribute('required', 'required');
+                document.getElementById('manualKw').removeAttribute('required');
+            } else {
+                autoBtn.classList.remove('active');
+                manualBtn.classList.add('active');
+                autoFields.style.display = 'none';
+                manualFields.style.display = 'block';
+                previewLabel.textContent = 'Girilecek Tüketim';
+                document.getElementById('chargePercent').removeAttribute('required');
+                document.getElementById('manualKw').setAttribute('required', 'required');
+            }
+            updatePreview();
+        }
+
+        // ==================== ACTIONS ====================
+        function addCharge(e) {
+            e.preventDefault();
+            const date = document.getElementById('chargeDate').value;
+
+            let capacity, percent, consumption;
+
+            if (chargeMode === 'auto') {
+                capacity = parseFloat(document.getElementById('batteryKw').value);
+                percent = parseFloat(document.getElementById('chargePercent').value);
+                consumption = parseFloat((capacity * percent / 100).toFixed(1));
+            } else {
+                // Manuel mod: direkt kW girişi
+                consumption = parseFloat(document.getElementById('manualKw').value);
+                capacity = parseFloat(document.getElementById('batteryKw').value) || 65; // Default 65
+                percent = Math.round((consumption / capacity) * 100); // Yüzde hesapla
+            }
+
+            charges.push({ date, capacity, percent, consumption });
+            saveCharges();
+            render();
+            closeChargeModal();
+            setTodayDate();
+            // Form alanlarını temizle
+            document.getElementById('chargePercent').value = '';
+            document.getElementById('manualKw').value = '';
+            toast('Şarj eklendi');
+        }
+
+        function addPayment(e) {
+            e.preventDefault();
+            const date = document.getElementById('paymentDate').value;
+            const amount = parseFloat(document.getElementById('paymentAmount').value);
+            payments.push({ date, amount });
+            savePayments();
+            render();
+            closePaymentModal();
+            setTodayDate();
+            toast('Ödeme eklendi');
+        }
+
+        function deleteCharge(idx) {
+            document.getElementById('deleteModal').classList.add('active');
+            document.getElementById('confirmDeleteBtn').onclick = () => {
+                charges.splice(idx, 1);
+                saveCharges();
+                render();
+                renderAllCharges();
+                renderChargeAnalysis();
+                closeDeleteModal();
+                toast('Silindi');
+            };
+        }
+
+        function deletePayment(idx) {
+            document.getElementById('deleteModal').classList.add('active');
+            document.getElementById('confirmDeleteBtn').onclick = () => {
+                payments.splice(idx, 1);
+                savePayments();
+                render();
+                renderAllPayments();
+                renderPaymentAnalysis();
+                closeDeleteModal();
+                toast('Silindi');
+            };
+        }
+
+        // ==================== EXPORT/IMPORT ====================
+        function exportJSON() {
+            download(JSON.stringify({ charges, payments, exportDate: new Date().toISOString() }, null, 2), 'sarj-verileri.json', 'application/json');
+            closeSettings();
+            toast('JSON indirildi');
+        }
+
+        function exportCSV() {
+            let csv = 'Tip,Tarih,Değer,Birim,Yüzde,Batarya\n';
+            charges.forEach(c => csv += `Şarj,${c.date},${c.consumption},kW,${c.percent}%,${c.capacity}\n`);
+            payments.forEach(p => csv += `Ödeme,${p.date},${p.amount},TL,,\n`);
+            download(csv, 'sarj-verileri.csv', 'text/csv');
+            closeSettings();
+            toast('CSV indirildi');
+        }
+
+        function triggerImport() { document.getElementById('importFile').click(); }
+
+        function importData(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                try {
+                    const data = JSON.parse(ev.target.result);
+                    if (data.charges && data.payments) {
+                        charges = data.charges;
+                        payments = data.payments;
+                        saveCharges();
+                        savePayments();
+                        render();
+                        toast('Veriler yüklendi');
+                    }
+                } catch { toast('Hatalı dosya'); }
+            };
+            reader.readAsText(file);
+            closeSettings();
+            e.target.value = '';
+        }
+
+        function confirmClearData() {
+            document.getElementById('deleteModal').classList.add('active');
+            document.getElementById('confirmDeleteBtn').onclick = () => {
+                charges = [];
+                payments = [];
+                saveCharges();
+                savePayments();
+                render();
+                closeDeleteModal();
+                closeSettings();
+                toast('Veriler silindi');
+            };
+        }
+
+        function download(content, filename, type) {
+            const blob = new Blob([content], { type });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = filename;
+            a.click();
+        }
+
+        function toast(msg) {
+            const t = document.createElement('div');
+            t.className = 'toast';
+            t.textContent = msg;
+            document.body.appendChild(t);
+            setTimeout(() => t.remove(), 2500);
+        }
+
+        // ==================== PDF REPORT ====================
+        async function generatePDFReport() {
+            toast('Rapor hazırlanıyor...');
+            closeSettings();
+
+            // Rapor için gizli container oluştur
+            const reportContainer = document.createElement('div');
+            reportContainer.id = 'pdfReportContainer';
+            reportContainer.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 800px;
+                padding: 40px;
+                background: white;
+                z-index: 9999;
+                font-family: 'Inter', sans-serif;
+            `;
+
+            const today = new Date();
+            const dateStr = `${today.getDate().toString().padStart(2, '0')}.${(today.getMonth() + 1).toString().padStart(2, '0')}.${today.getFullYear()}`;
+
+            const totalKw = charges.reduce((s, c) => s + c.consumption, 0);
+            const chargeCount = charges.length;
+            const avgCharge = chargeCount > 0 ? totalKw / chargeCount : 0;
+
+            // Aylık veriler
+            const monthlyCharges = getMonthlyData(charges, 'consumption');
+            const allMonths = Object.keys(monthlyCharges).sort().reverse().slice(0, 12);
+
+            // Tablo HTML oluştur
+            let tableHTML = '';
+            allMonths.forEach(month => {
+                const [year, mon] = month.split('-');
+                const monthName = monthNames[parseInt(mon) - 1];
+                const chargesInMonth = charges.filter(c => c.date.startsWith(month));
+                const totalKwMonth = chargesInMonth.reduce((s, c) => s + c.consumption, 0);
+                const countMonth = chargesInMonth.length;
+                tableHTML += `
+                    <tr>
+                        <td style="padding: 8px 12px; border-bottom: 1px solid #eee;">${monthName} ${year}</td>
+                        <td style="padding: 8px 12px; border-bottom: 1px solid #eee; text-align: center;">${countMonth}</td>
+                        <td style="padding: 8px 12px; border-bottom: 1px solid #eee; text-align: right; font-weight: 600;">${totalKwMonth.toFixed(1)} kW</td>
+                    </tr>
+                `;
+            });
+
+            reportContainer.innerHTML = `
+                <div style="text-align: center; margin-bottom: 30px;">
+                    <h1 style="color: #00b894; margin: 0; font-size: 28px;">⚡ Şarj Takip Raporu</h1>
+                    <p style="color: #666; margin: 10px 0 0 0; font-size: 14px;">Rapor Tarihi: ${dateStr}</p>
+                </div>
+                
+                <div style="display: flex; gap: 20px; margin-bottom: 30px;">
+                    <div style="flex: 1; background: linear-gradient(135deg, #00b894, #00a187); color: white; padding: 20px; border-radius: 12px; text-align: center;">
+                        <div style="font-size: 32px; font-weight: 700;">${totalKw.toFixed(1)}</div>
+                        <div style="font-size: 12px; opacity: 0.9;">Toplam kW</div>
+                    </div>
+                    <div style="flex: 1; background: #f5f5f7; padding: 20px; border-radius: 12px; text-align: center;">
+                        <div style="font-size: 32px; font-weight: 700; color: #0984e3;">${chargeCount}</div>
+                        <div style="font-size: 12px; color: #666;">Şarj Sayısı</div>
+                    </div>
+                    <div style="flex: 1; background: #f5f5f7; padding: 20px; border-radius: 12px; text-align: center;">
+                        <div style="font-size: 32px; font-weight: 700; color: #6c5ce7;">${avgCharge.toFixed(1)}</div>
+                        <div style="font-size: 12px; color: #666;">Ort. Şarj (kW)</div>
+                    </div>
+                </div>
+                
+                <div style="margin-bottom: 30px;">
+                    <h2 style="font-size: 18px; margin-bottom: 15px; color: #333;">📊 Aylık Tüketim Grafiği</h2>
+                    <canvas id="reportChart" width="720" height="250"></canvas>
+                </div>
+                
+                <div>
+                    <h2 style="font-size: 18px; margin-bottom: 15px; color: #333;">📋 Aylık Özet</h2>
+                    <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+                        <thead>
+                            <tr style="background: #f5f5f7;">
+                                <th style="padding: 10px 12px; text-align: left; font-weight: 600;">Ay</th>
+                                <th style="padding: 10px 12px; text-align: center; font-weight: 600;">Şarj Sayısı</th>
+                                <th style="padding: 10px 12px; text-align: right; font-weight: 600;">Toplam Tüketim</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${tableHTML}
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div style="margin-top: 40px; text-align: center; color: #999; font-size: 11px;">
+                    Şarj Takip - Elektrikli Araç Şarj Yönetimi
+                </div>
+            `;
+
+            document.body.appendChild(reportContainer);
+
+            // Grafik çiz
+            const reportMonths = allMonths.slice().reverse();
+            const chartCtx = document.getElementById('reportChart').getContext('2d');
+            new Chart(chartCtx, {
+                type: 'bar',
+                data: {
+                    labels: reportMonths.map(m => {
+                        const [y, mon] = m.split('-');
+                        return `${monthNamesShort[parseInt(mon) - 1]} ${y.slice(2)}`;
+                    }),
+                    datasets: [{
+                        label: 'Tüketim (kW)',
+                        data: reportMonths.map(m => monthlyCharges[m] || 0),
+                        backgroundColor: 'rgba(0, 184, 148, 0.8)',
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: false,
+                    animation: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { grid: { display: false } },
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+
+            // Kısa bekle sonra PDF oluştur
+            await new Promise(r => setTimeout(r, 500));
+
+            try {
+                const canvas = await html2canvas(reportContainer, {
+                    scale: 2,
+                    useCORS: true,
+                    backgroundColor: '#ffffff'
+                });
+
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF('p', 'mm', 'a4');
+
+                const imgWidth = 210;
+                const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+                pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, imgWidth, imgHeight);
+                pdf.save(`sarj-raporu-${dateStr.replace(/\./g, '-')}.pdf`);
+
+                toast('Rapor indirildi!');
+            } catch (err) {
+                console.error('PDF oluşturma hatası:', err);
+                toast('Hata oluştu!');
+            }
+
+            // Temizle
+            reportContainer.remove();
+        }
+
+    </script>
+</body>
+
+</html>

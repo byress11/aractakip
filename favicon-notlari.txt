@@ -1,0 +1,14 @@
+Uygulamanız için özel bir favicon eklemek isterseniz, oluşturduğum simgeyi (ev_charging_icon) kullanabilirsiniz.
+
+Favicon'u eklemek için iki seçeneğiniz var:
+
+## Seçenek 1: Online Favicon Generator Kullanın
+1. https://favicon.io/ veya https://realfavicongenerator.net/ gibi bir siteye gidin
+2. Oluşturduğum "ev_charging_icon" resmini yükleyin
+3. Favicon dosyalarını indirin
+4. HTML dosyanızın bulunduğu klasöre kopyalayın
+
+## Seçenek 2: Mevcut Data URI Kullanın (Şu anda aktif)
+HTML dosyasında zaten bir favicon eklenmiş durumda. Bu, base64 formatında kodlanmış bir görüntü kullanıyor ve harici dosya gerektirmiyor.
+
+Tarayıcı sekmesinde görünen simge şu anda aktif durumda.
